@@ -15,7 +15,7 @@ package  {
 		private var _textField:TextField;
 		private var _style:StyleSheet;
 
-		public function Project(options:Object) {
+		public function PickleButton(options:Object) {
 			this.itemWidth = options.width || 200;
 			this.padding = options.padding || 5;
 
@@ -58,6 +58,7 @@ package  {
 			text.wordWrap = true;
 			text.selectable = false;
 
+			text.mouseEnabled = false;
 			return text;
 		}
 
