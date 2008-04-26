@@ -7,11 +7,9 @@ package {
 
 		public function GithubBadge() {
 			var gw:Gateway = new Gateway();
+			var p:Project = new Project({});
 
-			gw.addEventListener(GatewayEvent.DATA_RECEIVED, onDataLoaded);
-			gw.getUserInfo('zmack');
-			addChild(new GithubBadgeSkin.ProjectSprouts());
-			trace("GithubBadge instantiated!");
+			addChild(p);
 		}
 
 		private function onDataLoaded(e:GatewayEvent):void {
