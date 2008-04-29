@@ -57,6 +57,7 @@ package  {
 			this._headerText.htmlText = '<h1>' + options.text + '<h1>';
 			this._headerText.x = options.image.width + this.lateralPadding*2;
 			this._headerText.y = this.bottomPadding;
+			this._headerText.width = this.listWidth - options.image.width - this.lateralPadding*2;
 			this._maximum_y = options.image.height + this.bottomPadding;
 			options.image.y = this.bottomPadding;
 			options.image.x = this.lateralPadding;
