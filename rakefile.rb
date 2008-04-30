@@ -71,7 +71,7 @@ mxmlc model.output => [:corelib] do |t|
   t.warnings                  = true
   t.default_background_color  = '#FFFFFF'
   t.default_frame_rate        = 24
-  t.default_size              = '400 400'
+  t.default_size              = '210 400'
   t.input                     = "#{model.src_dir}/GithubBadge.as"
   t.source_path               << model.asset_dir
 # t.source_path               << "#{model.lib_dir}/non-sprout-src-library"
