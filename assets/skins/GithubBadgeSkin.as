@@ -8,5 +8,8 @@ package skins {
 
 		[Embed(source="GithubBadge/public.png")]
 		public static var PublicProject:Class;
+
+		[Embed(source="GithubBadge/octocat_sad.gif")]
+		public static var OctocatImage:Class;
 	}
 }

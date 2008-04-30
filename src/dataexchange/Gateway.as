@@ -29,6 +29,7 @@ package dataexchange {
 
       this._loader = new URLLoader(request);
       this._loader.addEventListener(Event.COMPLETE, dataLoaded);
+      this._loader.addEventListener(IOErrorEvent.IO_ERROR, dataError);
     }
 
     private function dataLoaded(event:Event):void {

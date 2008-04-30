@@ -66,7 +66,7 @@ package  {
 			this.itemHeight = this._image.height + this.padding * 2;
 			this._textField.x = this._image.width + this.padding;
 			this._textField.width = this.itemWidth - this._image.width - this.padding;
-			this._textField.height = this.itemHeight - this.padding * 2;
+			this._textField.height = this.itemHeight - this.padding * 1;
 
 			this._image.x = this.padding;
 			this._image.y = this.padding;
