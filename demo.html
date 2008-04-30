@@ -1,0 +1,45 @@
+<html>
+	<head>
+		<title>Lovely Badjo Test</title>
+		<script lang="Javascript">
+			function getFlashMovie(movieName) {
+				var isIE = navigator.appName.indexOf("Microsoft") != -1;
+				return (isIE) ? window[movieName] : document[movieName];
+			}
+			function getUser() {
+				var user = document.getElementById('user').value;
+				var movie = getFlashMovie('main');
+
+				movie.requestData(user);
+			}
+		</script>
+	</head>
+	<body>
+		<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+						codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0"
+						width="210"
+						height="400"
+						align="middle"
+						id="main">
+				<param name="allowScriptAccess" value="sameDomain" />
+				<param name="movie" value="bin/GithubBadge.swf" />
+				<param name="quality" value="high" />
+				<param name="bgcolor" value="#ffffff" />
+				<embed src="bin/GithubBadge.swf"
+							 width="210"
+							 height="400"
+							 autostart="false"
+							 quality="high"
+							 bgcolor="#ffffff"
+							 FlashVars="gitUser=zmack"
+							 name="main"
+							 align="middle"
+							 allowScriptAccess="sameDomain"
+							 type="application/x-shockwave-flash"
+							 pluginspage="http://www.macromedia.com/go/getflashplayer" />
+		</object>
+		<label for="user">GitHub user:</label>
+		<input type="text" id="user" />
+		<input type="button" value="Get !" onClick="getUser();"/>
+	</body>
+</html>
