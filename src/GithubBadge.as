@@ -36,6 +36,7 @@ package {
 		public function GithubBadge() {
 			var user:String;
 			addExternalInterface();
+			trace(stage.height + ' -- ' + stage.width);
 
 			try {
 				user = getParams().gitUser;
@@ -66,7 +67,7 @@ package {
 			if ( _pl != null ) _pl.parent.removeChild(_pl);
 			_pl = new ProjectList()
 
-			_pl.setHeader({image: SpriteWrapper(loadAvatar('http://www.gravatar.com/avatar/' + MD5.hash(user.email) + '?s=40')), text: user.name });
+			_pl.setHeader({image: SpriteWrapper(loadAvatar('http://www.gravatar.com/avatar/' + MD5.hash(user.email || '') + '?s=40')), text: user.name || user.login });
 			user.repositories.forEach( function(repo:Object, index:uint, arr:Array):void {
 				_pl.addButton({image: SpriteWrapper(new GithubBadgeSkin.PublicProject()), text: repo.name });
 			});

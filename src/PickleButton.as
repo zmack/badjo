@@ -6,19 +6,25 @@ package  {
 	import flash.text.StyleSheet;
 	
 	public class PickleButton extends Sprite {
+		public static const NORMAL_COLOR:uint = 0xFF00FF;
+		public static const SELECTED_COLOR:uint = 0x0F00F0;
 		public var text:String;
 		public var itemWidth:Number;
 		public var itemHeight:Number;
 		public var padding:Number;
+		public var parentItem:Object;
 
+		private var _backgroundColor:uint;
 		private var _image:Sprite;
 		private var _textField:TextField;
 		private var _style:StyleSheet;
+		private var _resizeHeight:uint;
 
 		public function PickleButton(options:Object) {
 			this.itemWidth = options.width || 200;
 			this.padding = options.padding || 5;
 
+			this._backgroundColor = PickleButton.NORMAL_COLOR;
 			this._image = options.image || new Sprite();
 			this._textField = this.createTextField();
 			this._textField.htmlText = '<p>' + (options.text || 'No text specified') + '</p>';
@@ -31,6 +37,7 @@ package  {
 		}
 
 		public function drawBackground(color:uint = 0xFF00FF):void {
+			color = this._backgroundColor;
 			this.graphics.clear();
 			this.graphics.beginFill(color, 0.4);
 			this.graphics.drawRoundRect(0, 0, this.itemWidth, this.itemHeight, 15, 15);
@@ -39,14 +46,26 @@ package  {
 		private function addEvents():void {
 			this.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
 			this.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+			this.addEventListener(MouseEvent.CLICK, onClick);
 		}
 
 		private function onMouseOver(e:MouseEvent):void {
-			this.drawBackground(0x0F00F0);	
+			this._backgroundColor = PickleButton.SELECTED_COLOR;
+			this.drawBackground();
 		}
 
 		private function onMouseOut(e:MouseEvent):void {
+			trace("And we're out");
+			this._backgroundColor = PickleButton.NORMAL_COLOR;
 			this.drawBackground();
+		}
+
+		private function onClick(e:MouseEvent):void {
+			if ( this.itemHeight == 50 ) {
+				resizeTo();
+			} else {
+				resizeTo(50);
+			}
 		}
 
 		private function createTextField():TextField {
@@ -62,14 +81,44 @@ package  {
 			return text;
 		}
 
+		private function redraw():void {
+			this.drawBackground();
+		}
+
+		private function resizeTo(height:uint = 0):void {
+			var item:PickleButton = this;
+			height ||= this.getBaseHeight();
+			this._resizeHeight = height; 
+
+			if ( !this.hasEventListener(Event.ENTER_FRAME) ) {
+				this.addEventListener(Event.ENTER_FRAME, this.resizer);
+				trace("Added listener");
+			} 
+		}
+
+		private function resizer(e:Event):void {
+			if ( this.itemHeight != this._resizeHeight ) {
+				this.itemHeight += ( (itemHeight < this._resizeHeight)? 2 : -2 );
+				this.drawBackground();
+				(this.parentItem as ProjectList).redraw();
+			} else {
+				this.removeEventListener(Event.ENTER_FRAME, this.resizer);			
+				trace("Removed listener");
+			}
+		}
+
 		private function resizeComponents():void {
-			this.itemHeight = this._image.height + this.padding * 2;
+			this.itemHeight = this.getBaseHeight();
 			this._textField.x = this._image.width + this.padding;
 			this._textField.width = this.itemWidth - this._image.width - this.padding;
 			this._textField.height = this.itemHeight - this.padding * 1;
 
 			this._image.x = this.padding;
 			this._image.y = this.padding;
+		}
+
+		private function getBaseHeight() {
+			return this._image.height + this.padding * 2;
 		}
 
 		private function createStyleSheet():StyleSheet {

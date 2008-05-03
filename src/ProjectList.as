@@ -9,7 +9,8 @@ package  {
 		public var listWidth:Number;
 		public var lateralPadding:Number = 5;
 		public var bottomPadding:Number = 5;
-
+		
+		private var _items:Array;
 		private var _headerText:TextField;
 		private var _mask:Sprite;
 		private var _container:Sprite;
@@ -23,6 +24,7 @@ package  {
 			this._maximum_y = 0;
 			this.backgroundColor = 0x00FFD0;
 			this.listWidth = 210;
+			this._items = new Array();
 
 			addChild(this._mask);
 			addChild(this._container);
@@ -35,9 +37,19 @@ package  {
 			this.graphics.drawRoundRect(0, 0, this.listWidth, this._maximum_y + this.bottomPadding, 15, 15);
 		}
 
+		public function redraw():void {
+			this._maximum_y = AVATAR_SIZE + this.bottomPadding;
+			this._items.forEach( function(item:PickleButton, index:uint, arr:Array):void {
+				this.positionButton(item);
+				this._maximum_y = item.y + item.height;
+			}, this);
+			this.drawBackground();
+		}
+
 		public function addButton(options:Object):PickleButton {
 			var button:PickleButton = new PickleButton(options);
-			
+			button.parentItem = this;
+			this._items.push(button);
 			this._container.addChild(button)
 			this.positionButton(button);
 
@@ -62,7 +74,6 @@ package  {
 			this._maximum_y = AVATAR_SIZE + this.bottomPadding;
 			options.image.y = this.bottomPadding;
 			options.image.x = this.lateralPadding;
-			
 		}
 
 		private function positionButton(button:PickleButton):void {
