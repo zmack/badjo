@@ -4,6 +4,7 @@ package  {
 	import flash.text.StyleSheet;
 	
 	public class ProjectList extends Sprite {
+		public const AVATAR_SIZE:uint = 40;
 		public var backgroundColor:uint;
 		public var listWidth:Number;
 		public var lateralPadding:Number = 5;
@@ -50,15 +51,15 @@ package  {
 
 		public function setHeader(options:Object):void {
 			this._headerText = this.createTextField();
-			this._headerText.height = options.image.height;
+			this._headerText.height = AVATAR_SIZE;
 			addChild(options.image);
 			addChild(this._headerText);
 
 			this._headerText.htmlText = '<h1>' + options.text + '<h1>';
-			this._headerText.x = options.image.width + this.lateralPadding*2;
+			this._headerText.x = AVATAR_SIZE + this.lateralPadding*2;
 			this._headerText.y = this.bottomPadding;
-			this._headerText.width = this.listWidth - options.image.width - this.lateralPadding*2;
-			this._maximum_y = options.image.height + this.bottomPadding;
+			this._headerText.width = this.listWidth - AVATAR_SIZE - this.lateralPadding*2;
+			this._maximum_y = AVATAR_SIZE + this.bottomPadding;
 			options.image.y = this.bottomPadding;
 			options.image.x = this.lateralPadding;
 			

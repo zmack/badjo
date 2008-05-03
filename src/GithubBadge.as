@@ -1,12 +1,14 @@
 package {
+	import flash.display.Loader;
 	import flash.display.Sprite;
 	import flash.display.DisplayObject;
 	import flash.display.LoaderInfo;
+	import flash.net.URLRequest;
 	import skins.GithubBadgeSkin;
 	import dataexchange.*;
 	import com.adobe.serialization.json.JSON;
-
-	import flash.external.ExternalInterface;
+	import com.adobe.crypto.MD5;
+	import flash.external.ExternalInterface;	
 
 	/*
 	Data looks pretty much like this: 
@@ -43,7 +45,7 @@ package {
 
 			_gw = new Gateway();
 			
-			this.requestData(user);
+			this.requestData(user || 'zmack');
 		}
 
 		private function addExternalInterface():void {
@@ -64,7 +66,7 @@ package {
 			if ( _pl != null ) _pl.parent.removeChild(_pl);
 			_pl = new ProjectList()
 
-			_pl.setHeader({image: SpriteWrapper(new GithubBadgeSkin.DefaultAvatar()), text: user.name });
+			_pl.setHeader({image: SpriteWrapper(loadAvatar('http://www.gravatar.com/avatar/' + MD5.hash(user.email) + '?s=40')), text: user.name });
 			user.repositories.forEach( function(repo:Object, index:uint, arr:Array):void {
 				_pl.addButton({image: SpriteWrapper(new GithubBadgeSkin.PublicProject()), text: repo.name });
 			});
@@ -88,7 +90,6 @@ package {
 			} else {
 				displayError();
 			}
-			trace(e.data);
 		}
 
 		private function SpriteWrapper(d:DisplayObject):Sprite {
@@ -96,6 +97,13 @@ package {
 			s.addChild(d);
 
 			return s;
+		}
+
+		private function loadAvatar(url:String):DisplayObject {
+			var request:URLRequest = new URLRequest(url);
+			var loader:Loader = new Loader();
+			loader.load(request);
+			return loader;
 		}
 	}
 }
