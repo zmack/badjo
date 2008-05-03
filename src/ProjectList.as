@@ -41,7 +41,7 @@ package  {
 			this._maximum_y = AVATAR_SIZE + this.bottomPadding;
 			this._items.forEach( function(item:PickleButton, index:uint, arr:Array):void {
 				this.positionButton(item);
-				this._maximum_y = item.y + item.height;
+				this._maximum_y = item.y + item.itemHeight;
 			}, this);
 			this.drawBackground();
 		}
@@ -53,7 +53,7 @@ package  {
 			this._container.addChild(button)
 			this.positionButton(button);
 
-			this._maximum_y = button.y + button.height;
+			this._maximum_y = button.y + button.itemHeight;
 			button.x = this.lateralPadding;
 
 			trace(button.y);

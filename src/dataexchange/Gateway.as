@@ -40,7 +40,7 @@ package dataexchange {
 			dispatchEvent(newEvent);
     }
 		
-		private function dataError(event:Event):void {
+		private function dataError(e:Event):void {
 			var newEvent:GatewayEvent = new GatewayEvent(GatewayEvent.DATA_RECEIVED, null, false);
 			dispatchEvent(newEvent);
 		}

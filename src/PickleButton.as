@@ -19,6 +19,7 @@ package  {
 		private var _textField:TextField;
 		private var _style:StyleSheet;
 		private var _resizeHeight:uint;
+		private var _extendedContainer:Sprite;
 
 		public function PickleButton(options:Object) {
 			this.itemWidth = options.width || 200;
@@ -28,6 +29,9 @@ package  {
 			this._image = options.image || new Sprite();
 			this._textField = this.createTextField();
 			this._textField.htmlText = '<p>' + (options.text || 'No text specified') + '</p>';
+			if ( options.extended_content != null ) {
+				this._extendedContainer = options.extended_content;
+			}
 
 			this.resizeComponents();
 			this.drawBackground();
@@ -36,10 +40,9 @@ package  {
 			this.addEvents();
 		}
 
-		public function drawBackground(color:uint = 0xFF00FF):void {
-			color = this._backgroundColor;
+		public function drawBackground():void {
 			this.graphics.clear();
-			this.graphics.beginFill(color, 0.4);
+			this.graphics.beginFill(this._backgroundColor, 0.4);
 			this.graphics.drawRoundRect(0, 0, this.itemWidth, this.itemHeight, 15, 15);
 		}
 
@@ -55,17 +58,26 @@ package  {
 		}
 
 		private function onMouseOut(e:MouseEvent):void {
-			trace("And we're out");
 			this._backgroundColor = PickleButton.NORMAL_COLOR;
 			this.drawBackground();
 		}
 
 		private function onClick(e:MouseEvent):void {
-			if ( this.itemHeight == 50 ) {
-				resizeTo();
+			if ( this.itemHeight == this.getExtendedHeight() ) {
+				this.retract()
 			} else {
-				resizeTo(50);
+				this.extend();
 			}
+		}
+		
+		private function retract():void {
+			this.hideExtended();
+			this.resizeTo();
+		}
+
+		private function extend():void {
+			this.resizeTo(this.getExtendedHeight());
+			this.displayExtended();
 		}
 
 		private function createTextField():TextField {
@@ -81,8 +93,9 @@ package  {
 			return text;
 		}
 
-		private function redraw():void {
+		private function redraw(withParent:Boolean = false):void {
 			this.drawBackground();
+			if ( withParent ) (this.parentItem as ProjectList).redraw();
 		}
 
 		private function resizeTo(height:uint = 0):void {
@@ -97,11 +110,12 @@ package  {
 		}
 
 		private function resizer(e:Event):void {
-			if ( this.itemHeight != this._resizeHeight ) {
+			if ( this.itemHeight < this._resizeHeight ) {
 				this.itemHeight += ( (itemHeight < this._resizeHeight)? 2 : -2 );
-				this.drawBackground();
-				(this.parentItem as ProjectList).redraw();
+				this.redraw(true);
 			} else {
+				this.itemHeight = this._resizeHeight;
+				this.redraw(true);
 				this.removeEventListener(Event.ENTER_FRAME, this.resizer);			
 				trace("Removed listener");
 			}
@@ -111,14 +125,18 @@ package  {
 			this.itemHeight = this.getBaseHeight();
 			this._textField.x = this._image.width + this.padding;
 			this._textField.width = this.itemWidth - this._image.width - this.padding;
-			this._textField.height = this.itemHeight - this.padding * 1;
+			this._textField.height = this.itemHeight - this.padding;
 
 			this._image.x = this.padding;
 			this._image.y = this.padding;
 		}
 
-		private function getBaseHeight() {
+		private function getBaseHeight():uint {
 			return this._image.height + this.padding * 2;
+		}
+
+		private function getExtendedHeight():uint {
+			return this.getBaseHeight() + this._extendedContainer.height + this.padding;
 		}
 
 		private function createStyleSheet():StyleSheet {
@@ -127,6 +145,15 @@ package  {
 			style.parseCSS('p { font-family: "Trebuchet MS"; font-size: 11px; color: #000000; background-color: #FF00FF; }');
 
 			return style;
+		}
+
+		private function displayExtended():void {
+			this.addChild(this._extendedContainer);
+			this._extendedContainer.y = this.getBaseHeight();
+		}
+
+		private function hideExtended():void {
+			this._extendedContainer.parent.removeChild(this._extendedContainer);
 		}
 
 	}

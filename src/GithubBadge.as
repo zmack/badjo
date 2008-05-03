@@ -3,6 +3,9 @@ package {
 	import flash.display.Sprite;
 	import flash.display.DisplayObject;
 	import flash.display.LoaderInfo;
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
+	import flash.text.StyleSheet;
 	import flash.net.URLRequest;
 	import skins.GithubBadgeSkin;
 	import dataexchange.*;
@@ -69,8 +72,12 @@ package {
 
 			_pl.setHeader({image: SpriteWrapper(loadAvatar('http://www.gravatar.com/avatar/' + MD5.hash(user.email || '') + '?s=40')), text: user.name || user.login });
 			user.repositories.forEach( function(repo:Object, index:uint, arr:Array):void {
-				_pl.addButton({image: SpriteWrapper(new GithubBadgeSkin.PublicProject()), text: repo.name });
-			});
+				_pl.addButton({
+					image: SpriteWrapper(new GithubBadgeSkin.PublicProject()), 
+					text: repo.name,
+					extended_content: SpriteWrapper(this.createTextField(repo.description))
+				});
+			}, this);
 
 			addChild(_pl);
 		}
@@ -105,6 +112,26 @@ package {
 			var loader:Loader = new Loader();
 			loader.load(request);
 			return loader;
+		}
+
+		private function createStyleSheet():StyleSheet {
+			var style:StyleSheet = new StyleSheet();
+
+			style.parseCSS('p { font-family: "Trebuchet MS"; font-size: 10px; color: #000000; background-color: #FF00FF; }');
+			return style;
+		}
+
+		private function createTextField(text:String):TextField {
+			var textField:TextField = new TextField();
+			
+			textField.width = 200;
+			textField.height = 0;
+			textField.autoSize = TextFieldAutoSize.LEFT;
+			textField.styleSheet = this.createStyleSheet();
+			textField.selectable = false;
+			textField.htmlText = '<p>' + text + '</p>';
+
+			return textField;
 		}
 	}
 }
