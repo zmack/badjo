@@ -5,40 +5,44 @@ package  {
 	
 	public class ProjectList extends Sprite {
 		public const AVATAR_SIZE:uint = 40;
+
 		public var backgroundColor:uint;
-		public var listWidth:Number;
-		public var lateralPadding:Number = 5;
-		public var bottomPadding:Number = 5;
+		public var listWidth:uint;
+		public var listHeight:uint;
+		public var lateralPadding:uint = 5;
+		public var bottomPadding:uint = 5;
 		
 		private var _items:Array;
 		private var _headerText:TextField;
 		private var _mask:Sprite;
 		private var _container:Sprite;
-		private var _buttonSpacing:Number;
-		private var _maximum_y:Number
+		private var _buttonSpacing:uint;
+		private var _maximum_y:uint;
 
 		public function ProjectList() {
-			this._mask = new Sprite();
-			this._container = new Sprite();
+			this.listWidth = 210;
+			this.listHeight = 200;
 			this._buttonSpacing = 5;
 			this._maximum_y = 0;
 			this.backgroundColor = 0x00FFD0;
-			this.listWidth = 210;
 			this._items = new Array();
 
+			this._mask = this.createMask();
+			this._container = new Sprite();
 			addChild(this._mask);
 			addChild(this._container);
+			this._container.mask = this._mask;
 		} 
 		
 		private function drawBackground():void {
 			this.graphics.clear();
 			this.graphics.beginFill(this.backgroundColor, 0.4);
 			//this.graphics.lineStyle(2, 0x000000);
-			this.graphics.drawRoundRect(0, 0, this.listWidth, this._maximum_y + this.bottomPadding, 15, 15);
+			this.graphics.drawRoundRect(0, 0, this.listWidth, this.listHeight, 15, 15);
 		}
 
 		public function redraw():void {
-			this._maximum_y = AVATAR_SIZE + this.bottomPadding;
+			this._maximum_y = 0;
 			this._items.forEach( function(item:PickleButton, index:uint, arr:Array):void {
 				this.positionButton(item);
 				this._maximum_y = item.y + item.itemHeight;
@@ -71,7 +75,8 @@ package  {
 			this._headerText.x = AVATAR_SIZE + this.lateralPadding*2;
 			this._headerText.y = this.bottomPadding;
 			this._headerText.width = this.listWidth - AVATAR_SIZE - this.lateralPadding*2;
-			this._maximum_y = AVATAR_SIZE + this.bottomPadding;
+			this._container.y = AVATAR_SIZE + this.bottomPadding;
+			this._maximum_y = 0;
 			options.image.y = this.bottomPadding;
 			options.image.x = this.lateralPadding;
 		}
@@ -94,6 +99,27 @@ package  {
 			text.selectable = false;
 
 			return text;
+		}
+
+		private function getHeaderHeight():uint {
+			return AVATAR_SIZE + this.bottomPadding;
+		}
+
+		private function getMaskHeight():uint {
+			return this.listHeight - AVATAR_SIZE - 2 * this.bottomPadding;
+		}
+
+		private function getMaskWidth():uint {
+			return this.listWidth - 2 * this.lateralPadding;
+		}
+
+		private function createMask():Sprite {
+			var mask:Sprite = new Sprite;
+
+			mask.graphics.clear();
+			mask.graphics.beginFill(0x000000);
+			mask.graphics.drawRoundRect(this.lateralPadding, this.getHeaderHeight(), this.getMaskWidth(), this.getMaskHeight(), 15, 15);
+			return mask;
 		}
 	}
 }

@@ -150,6 +150,7 @@ package  {
 		private function displayExtended():void {
 			this.addChild(this._extendedContainer);
 			this._extendedContainer.y = this.getBaseHeight();
+			this._extendedContainer.x = this.padding;
 		}
 
 		private function hideExtended():void {
