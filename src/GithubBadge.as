@@ -3,6 +3,8 @@ package {
 	import flash.display.Sprite;
 	import flash.display.DisplayObject;
 	import flash.display.LoaderInfo;
+	import flash.display.StageScaleMode;
+	import flash.display.StageAlign;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.StyleSheet;
@@ -38,8 +40,10 @@ package {
 
 		public function GithubBadge() {
 			var user:String;
+			stage.scaleMode = StageScaleMode.NO_SCALE;
+			stage.align = StageAlign.TOP_LEFT;
+
 			addExternalInterface();
-			trace(stage.height + ' -- ' + stage.width);
 
 			try {
 				user = getParams().gitUser;
@@ -49,7 +53,7 @@ package {
 
 			_gw = new Gateway();
 			
-			this.requestData(user || 'zmack');
+			this.requestData(user || 'defunkt');
 		}
 
 		private function addExternalInterface():void {
@@ -68,14 +72,14 @@ package {
 
 		private function displayProjectList(user:Object):void {
 			if ( _pl != null ) _pl.parent.removeChild(_pl);
-			_pl = new ProjectList()
+			_pl = new ProjectList({ width: stage.stageWidth, height: stage.stageHeight })
 
 			_pl.setHeader({image: SpriteWrapper(loadAvatar('http://www.gravatar.com/avatar/' + MD5.hash(user.email || '') + '?s=40')), text: user.name || user.login });
 			user.repositories.forEach( function(repo:Object, index:uint, arr:Array):void {
 				_pl.addButton({
 					image: SpriteWrapper(new GithubBadgeSkin.PublicProject()), 
 					text: repo.name,
-					extended_content: SpriteWrapper(this.createTextField(repo.description))
+					extended_content: SpriteWrapper(this.createTextField(repo.description || 'No description'))
 				});
 			}, this);
 

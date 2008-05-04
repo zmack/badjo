@@ -19,9 +19,9 @@ package  {
 		private var _buttonSpacing:uint;
 		private var _maximum_y:uint;
 
-		public function ProjectList() {
-			this.listWidth = 210;
-			this.listHeight = 200;
+		public function ProjectList(options:Object) {
+			this.listWidth = options.width;
+			this.listHeight = options.height;
 			this._buttonSpacing = 5;
 			this._maximum_y = 0;
 			this.backgroundColor = 0x00FFD0;
@@ -51,6 +51,7 @@ package  {
 		}
 
 		public function addButton(options:Object):PickleButton {
+			options.width = this.listWidth - 2 * this.lateralPadding;
 			var button:PickleButton = new PickleButton(options);
 			button.parentItem = this;
 			this._items.push(button);
