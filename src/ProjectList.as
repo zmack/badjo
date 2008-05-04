@@ -2,6 +2,8 @@ package  {
 	import flash.display.Sprite;
 	import flash.text.TextField;
 	import flash.text.StyleSheet;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
 	
 	public class ProjectList extends Sprite {
 		public const AVATAR_SIZE:uint = 40;
@@ -16,6 +18,7 @@ package  {
 		private var _headerText:TextField;
 		private var _mask:Sprite;
 		private var _container:Sprite;
+		private var _controls:Sprite;
 		private var _buttonSpacing:uint;
 		private var _maximum_y:uint;
 
@@ -27,10 +30,12 @@ package  {
 			this.backgroundColor = 0x00FFD0;
 			this._items = new Array();
 
+			this._controls = this.createScroll();
 			this._mask = this.createMask();
 			this._container = new Sprite();
 			addChild(this._mask);
 			addChild(this._container);
+			addChild(this._controls);
 			this._container.mask = this._mask;
 		} 
 		
@@ -102,25 +107,89 @@ package  {
 			return text;
 		}
 
+		private function createMask():Sprite {
+			var mask:Sprite = new Sprite;
+
+			mask.graphics.clear();
+			mask.graphics.beginFill(0x000000);
+			mask.graphics.drawRoundRect(this.lateralPadding, this.getHeaderHeight() + this.bottomPadding, this.getMaskWidth(), this.getMaskHeight(), 15, 15);
+			return mask;
+		}
+
 		private function getHeaderHeight():uint {
 			return AVATAR_SIZE + this.bottomPadding;
 		}
 
 		private function getMaskHeight():uint {
-			return this.listHeight - AVATAR_SIZE - 2 * this.bottomPadding;
+			return this.listHeight - AVATAR_SIZE - 3 * this.bottomPadding - this._controls.height;
 		}
 
 		private function getMaskWidth():uint {
 			return this.listWidth - 2 * this.lateralPadding;
 		}
 
-		private function createMask():Sprite {
-			var mask:Sprite = new Sprite;
+		private function scrollUp(e:Event):void {
+			this._container.y -= 5;
+		}
 
-			mask.graphics.clear();
-			mask.graphics.beginFill(0x000000);
-			mask.graphics.drawRoundRect(this.lateralPadding, this.getHeaderHeight(), this.getMaskWidth(), this.getMaskHeight(), 15, 15);
-			return mask;
+		private function scrollDown(e:Event):void {
+			this._container.y += 5;
+		}
+
+		private function createScroll():Sprite {
+			var scrollControls:Sprite = new Sprite;
+
+			var scrollUp:Sprite = this.createScrollUp();
+			var scrollDown:Sprite = this.createScrollDown();
+
+			scrollControls.addChild(scrollUp);
+			scrollControls.addChild(scrollDown);
+			scrollUp.x = 30;
+			scrollDown.x = 60;
+
+			scrollControls.y = this.listHeight - scrollControls.height;
+
+			return scrollControls;
+		}
+
+		private function createScrollUp():Sprite {
+			var s:Sprite = this.createButtonyThing();
+
+			s.addEventListener(MouseEvent.MOUSE_DOWN, this.startScrollUp);
+			return s;
+		}
+
+		private function createScrollDown():Sprite {
+			var s:Sprite = this.createButtonyThing();
+
+			s.addEventListener(MouseEvent.MOUSE_DOWN, this.startScrollDown);
+			return s;
+		}
+
+		private function startScrollUp(e:Event):void {
+			stage.addEventListener(MouseEvent.MOUSE_UP, this.stopScroll);
+			this.addEventListener(Event.ENTER_FRAME, this.scrollUp);
+		}
+
+		private function startScrollDown(e:Event):void {
+			stage.addEventListener(MouseEvent.MOUSE_UP, this.stopScroll);
+			this.addEventListener(Event.ENTER_FRAME, this.scrollDown);
+		}
+
+		private function stopScroll(e:Event):void {
+			this.removeEventListener(Event.ENTER_FRAME, this.scrollUp);
+			this.removeEventListener(Event.ENTER_FRAME, this.scrollDown);
+			stage.removeEventListener(MouseEvent.MOUSE_UP, this.stopScroll);
+		}
+
+		private function createButtonyThing():Sprite {
+			var s:Sprite = new Sprite();
+
+			s.graphics.clear();
+			s.graphics.beginFill(0xFFFFFF);
+			s.graphics.drawRoundRect(0, 0, 15, 15, 15, 15);
+
+			return s;
 		}
 	}
 }

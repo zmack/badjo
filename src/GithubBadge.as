@@ -128,9 +128,10 @@ package {
 		private function createTextField(text:String):TextField {
 			var textField:TextField = new TextField();
 			
-			textField.width = 200;
+			textField.width = stage.stageWidth - 20; // FIXME: dirty hardcode business.
 			textField.height = 0;
 			textField.autoSize = TextFieldAutoSize.LEFT;
+			textField.wordWrap = true;
 			textField.styleSheet = this.createStyleSheet();
 			textField.selectable = false;
 			textField.htmlText = '<p>' + text + '</p>';
